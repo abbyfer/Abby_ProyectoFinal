@@ -71,7 +71,7 @@ public class Cine {
         panelBoton.add(botonInicio);
         panelPrincipal.add(panelBoton, BorderLayout.SOUTH);
 
-        frame.add(panelPrincipal); //SDe agrega el panel a la ventana
+        frame.add(panelPrincipal); //De agrega el panel a la ventana
         frame.setLocationRelativeTo(null); // Centra la ventana
         frame.setVisible(true);  // Muestra la ventana
     }
