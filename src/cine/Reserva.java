@@ -3,47 +3,83 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package cine;
+import java.util.Random;
 
-/**
- *
- * @author afern
- */
-import java.util.ArrayList;
 public class Reserva {
+    private boolean[][] silla; // Matriz de los asientos
+    private String pelicula;      // Nombre de la película
+    private String horario;       // Horario 
 
-    private boolean[][] silla;
-    public Reserva(int filas, int columnas) {
-        silla = new boolean[filas][columnas];
+    // Constructor de la sala de cine con filas y columnas
+    public Reserva(int filas, int columnas, String pelicula, String horario) {
+        this.silla = new boolean[filas][columnas];  // Inicializa la matriz de asientos
+        this.pelicula = pelicula;                     // Asigna la pelicula seleccionada
+        this.horario = horario;                       // Asigna el horario seleccionado
+        ReservasAleatorias();                 //reservas aleatorias al inicio
     }
 
-    public String intentarReservar(int filaUsuario, int columnaUsuario) {
-        //para que sea mas amigable, las filas y columnas inician en 1 en vez de 0
-        int fila = filaUsuario - 1;
-        int columna = columnaUsuario - 1;
-
-        if (fila < 0 || fila >= silla.length || columna < 0 || columna >= silla[0].length) {
-            return "La silla no es valida";
+    // Metodo de reserva para un asiento específico
+    public boolean reservarSilla(int fila, int columna) {
+        // Verifica si el asiento esta en los límites o ocupado
+        if (fila < 0 || fila >= silla.length || columna < 0 || columna >= silla[0].length || silla[fila][columna]) {
+            return false; // No se puede reservar
         }
-        if (silla[fila][columna]) {
-            return "La silla ya esta ocupada";
-        }
-        silla[fila][columna] = true;
-        return "Silla reservada exitosamente!";
+        silla[fila][columna] = true;  // Marca el asiento como reservado
+        return true;  // se pudo reservar
     }
-//imprime la salas con una x sobre las sillas ocupadas
-    @Override
-    public String toString() {
-        String resultado = "";
-        for (int i = 0; i < silla.length; i++) {
-            for (int j = 0; j < silla[i].length; j++) {
-                if (silla[i][j]) {
-                    resultado += "[X] ";
-                } else {
-                    resultado += "[ ] ";
-                }
+
+    // Metodo que muestra el estado actual de las sillas
+    public String mostrarSilla() {
+    String resultado = "Pelicula: " + pelicula + "\nHorario: " + horario + "\n\n";
+    // Recorre la matriz de asientos
+    for (boolean[] fila : silla) {
+        for (boolean asiento : fila) {
+            // Muestra X para reservado y [ ] para disponible
+            resultado += (asiento ? "[X] " : "[ ] ");
+        }
+        resultado += "\n";  // Salto de línea para cada fila
+    }
+    return resultado;  // Devuelve el resultado
+}
+
+    // Calcula el porcentaje de ocupación de los asientos
+    public double calcularPorcentaje() {
+        int ocupados = 0;  // Contador de sillas ocupados
+
+        // cuenta las sillas ocupadas
+        for (boolean[] fila : silla) {
+            for (boolean asiento : fila) {
+                if (asiento) ocupados++;  
             }
-            resultado += "\n";
         }
-        return resultado;
+        
+        // Calcula el porcentaje de ocupación
+        return (ocupados * 100.0) / (silla.length * silla[0].length);
+    }
+
+    // Selecciona con random un ganador
+    public String Rifa() {
+        Random random = new Random();  
+        while (true) {
+            int fila = random.nextInt(silla.length); 
+            int columna = random.nextInt(silla[0].length); 
+            // Si la silla esta reservada, es el ganador
+            if (silla[fila][columna]) {
+                return "Fila " + (fila + 1) + ", Columna " + (columna + 1);  // Formato base 1
+            }
+        }
+    }
+
+    //reservas aleatorias para el 20% de los asientos para que no se muestren salas vacias
+    private void ReservasAleatorias() {
+        Random random = new Random();
+        int reservas = (int) (silla.length * silla[0].length * 0.2);
+        for (int i = 0; i < reservas; i++) {
+            int fila = random.nextInt(silla.length); 
+            int columna = random.nextInt(silla[0].length); 
+            
+            // Marca el asiento como reservado
+            silla[fila][columna] = true;
+        }
     }
 }
